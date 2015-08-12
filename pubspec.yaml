@@ -1,0 +1,11 @@
+name: squilder
+description: Type-safe builder of SQL strings
+version: 0.0.1
+author: Anton Astashov <anton.astashov@gmail.com>
+
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+
+dev_dependencies:
+  test: any
+  tuneup: any
