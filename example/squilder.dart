@@ -31,10 +31,9 @@ class OrderTableFields extends TableFields {
 
 void main() {
   final orders = new OrderTable();
-  final Context ctx = new Context();
-  final sql = ctx.select(orders.f.all).from([orders]).where(orders.f.id.eqToObj(5).and(orders.f.name.like("%blah%"))).toSql();
-  var a = ctx.select(orders.f.all).where(orders.f.id.eqToObj(5));
-  final sql2 = ctx.select(orders.f.all).where(orders.f.id.eqToObj(5).and(orders.f.name.like("%blah%"))).toSql();
+  final sql = select(orders.f.all).from([orders]).where(orders.f.id.eqToObj(5).and(orders.f.name.like("%blah%"))).toSql();
+  var a = select(orders.f.all).where(orders.f.id.eqToObj(5));
+  final sql2 = select(orders.f.all).where(orders.f.id.eqToObj(5).and(orders.f.name.like("%blah%"))).toSql();
   print(sql);
   print(sql2);
 }

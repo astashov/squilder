@@ -37,6 +37,8 @@ class OrderTableFields extends TableFields {
     _name = new TableField<String>(table, "name");
   }
 }
+
+final orders = new OrderTable();
 ```
 
 And then you could use them like this:
@@ -44,10 +46,7 @@ And then you could use them like this:
 
 ```dart
 void main() {
-  OrderTable orders = new OrderTable();
-  Context ctx = new Context();
-  String sql = ctx
-      .select(orders.f.all)
+  String sql = select(orders.f.all)
       .from([orders])
       .where(orders.f.id.eqToObj(5).and(orders.f.name.like("%blah%")))
       .toSql();
