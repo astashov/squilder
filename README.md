@@ -46,11 +46,14 @@ And then you could use them like this:
 
 ```dart
 void main() {
-  String sql = select(orders.f.all)
+  String selectString = select(orders.f.all)
       .from([orders])
       .where(orders.f.id.eqToObj(5).and(orders.f.name.like("%blah%")))
       .toSql();
-  print(sql);
+  print(selectString);
+
+  String insertString = insertInto(orders, [orders.f.name]).values(["New one"]).toSql();
+  print(insertString);
 }
 ```
 

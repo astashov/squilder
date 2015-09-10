@@ -3,7 +3,7 @@ library squilder.select;
 import 'package:squilder/src/table_fields.dart';
 import 'package:squilder/src/table.dart';
 import 'package:squilder/src/condition.dart';
-import 'package:squilder/src/step_interfaces.dart';
+import 'package:squilder/src/select_interfaces.dart';
 import 'package:squilder/src/serializable.dart';
 
 SelectStep select(Iterable<TableField> fields) {
@@ -40,7 +40,7 @@ class Select implements SelectStep, OffsetStep, JoinStep, OnStep {
       this.fromTables = fromTables != null ? fromTables : [],
       this.groupFields = groupFields != null ? groupFields : [];
 
-  Select update({
+  Select _update({
       Iterable<TableField> selectFields,
       Iterable<Table> fromTables,
       List<_JoinPair> joinPairs,
@@ -65,11 +65,11 @@ class Select implements SelectStep, OffsetStep, JoinStep, OnStep {
   }
 
   FromStep from(Iterable<Table> tables) {
-    return update(fromTables: []..addAll(this.fromTables)..addAll(tables));
+    return _update(fromTables: []..addAll(this.fromTables)..addAll(tables));
   }
 
   WhereStep where(Condition condition) {
-    return update(whereCondition: (whereCondition != null ? whereCondition.and(condition) : condition));
+    return _update(whereCondition: (whereCondition != null ? whereCondition.and(condition) : condition));
   }
 
   String toSql() {
@@ -88,7 +88,7 @@ class Select implements SelectStep, OffsetStep, JoinStep, OnStep {
   }
 
   SelectStep select(Iterable<TableField> fields) {
-    return update(selectFields: []..addAll(this.selectFields)..addAll(fields));
+    return _update(selectFields: []..addAll(this.selectFields)..addAll(fields));
   }
 
   OnStep innerJoin(Table table) {
@@ -106,38 +106,38 @@ class Select implements SelectStep, OffsetStep, JoinStep, OnStep {
   OnStep _join(JoinType type, Table table) {
     var joinPair = new _JoinPair(type, table, null);
     var newJoinPairs = []..addAll(joinPairs)..add(joinPair);
-    return update(joinPairs: newJoinPairs);
+    return _update(joinPairs: newJoinPairs);
   }
 
   JoinStep on(Condition condition) {
     var joinPair = joinPairs.last.update(condition: condition);
     var newJoinPairs = []..addAll(joinPairs);
     newJoinPairs[newJoinPairs.length - 1] = joinPair;
-    return update(joinPairs: newJoinPairs);
+    return _update(joinPairs: newJoinPairs);
   }
 
   OrderByStep union(SelectStep select) {
-    return update(unionSelects: []..addAll(unionSelects)..add(select));
+    return _update(unionSelects: []..addAll(unionSelects)..add(select));
   }
 
   OffsetStep limit(int number){
-    return update(limitValue: number);
+    return _update(limitValue: number);
   }
 
   OrderByStep orderBy(TableField field, OrderModifier modifier) {
-    return update(orderPairs: []..addAll(orderPairs)..add(new _OrderPair(field, modifier)));
+    return _update(orderPairs: []..addAll(orderPairs)..add(new _OrderPair(field, modifier)));
   }
 
   HavingStep having(Condition condition){
-    return update(havingCondition: condition);
+    return _update(havingCondition: condition);
   }
 
   GroupByStep groupBy(Iterable<TableField> fields){
-    return update(groupFields: []..addAll(groupFields)..addAll(fields));
+    return _update(groupFields: []..addAll(groupFields)..addAll(fields));
   }
 
   UnionStep offset(int offset){
-    return update(offsetValue: offset);
+    return _update(offsetValue: offset);
   }
 }
 

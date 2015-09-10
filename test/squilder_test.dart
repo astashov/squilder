@@ -31,7 +31,6 @@ class OrderTableFields extends TableFields {
 
   OrderTableFields(Table table) {
     _id = new TableField<int>(table, "id");
-    _id = new TableField<int>(table, "id");
     _name = new TableField<String>(table, "name");
   }
 }
@@ -75,12 +74,23 @@ void main() {
 
     });
 
-    test('First Test', () {
+    test('select Test', () {
       String sql = select(orders.f.all)
           .from([orders])
           .innerJoin(orderRecipients).on(orders.f.id.eqToField(orderRecipients.f.orderId))
           .where(orders.f.id.eqToObj(5).and(orders.f.name.like("%blah%")))
           .union(select(orders.f.all).from([orders]).where(orders.f.id.eqToObj(6)))
+          .toSql();
+      print(sql);
+      expect(true, isTrue);
+    });
+
+    test('insertInto Test', () {
+      String sql = insertInto(orderRecipients, [orderRecipients.f.name, orderRecipients.f.orderId])
+          .values(["new", 5])
+          .onDuplicateKeyUpdate()
+          .setObj(orderRecipients.f.name, "default")
+          .setObj(orderRecipients.f.orderId, 6)
           .toSql();
       print(sql);
       expect(true, isTrue);
