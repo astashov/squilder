@@ -8,7 +8,7 @@ class LikeCondition extends Object with Condition {
   LikeCondition(this.field, this.pattern);
 
   String toSql() {
-    return "(${field.toSql()} LIKE ${utils.objectToSql(utils.escape(pattern))})";
+    return "${field.toSql()} LIKE ${utils.objectToSql(utils.escape(pattern))}";
   }
 }
 

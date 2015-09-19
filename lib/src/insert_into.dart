@@ -45,7 +45,7 @@ class InsertInto implements InsertValuesStep, InsertSetStep, InsertOnDuplicateSe
     if (_onDuplicateKeyUpdate != null && _onDuplicateKeyUpdate.isNotEmpty) {
       sql += " ON DUPLICATE KEY UPDATE ${_onDuplicateKeyUpdate.map((c) => c.toSql()).join(", ")}";
     }
-    return "($sql)";
+    return sql;
   }
 
   InsertOnDuplicateSetMoreStep setField(TableField field, TableField anotherField) {

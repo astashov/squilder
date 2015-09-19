@@ -7,7 +7,7 @@ class EqualObjectCondition<T> extends Object with Condition {
   EqualObjectCondition(this.field, this.object);
 
   String toSql() {
-    return "(${field.toSql()} = ${utils.objectToSql(object)})";
+    return "${field.toSql()} = ${utils.objectToSql(object)}";
   }
 }
 

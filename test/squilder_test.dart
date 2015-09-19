@@ -95,5 +95,15 @@ void main() {
       print(sql);
       expect(true, isTrue);
     });
+
+    test('update Test', () {
+      String sql = update(orderRecipients)
+          .setObj(orderRecipients.f.name, "default")
+          .setObj(orderRecipients.f.orderId, 6)
+          .where(orderRecipients.f.name.eqToObj("blah"))
+          .toSql();
+      print(sql);
+      expect(true, isTrue);
+    });
   });
 }
