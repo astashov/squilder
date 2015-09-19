@@ -105,5 +105,13 @@ void main() {
       print(sql);
       expect(true, isTrue);
     });
+
+    test('delete Test', () {
+      String sql = delete(orderRecipients)
+          .where(orderRecipients.f.name.eqToObj("blah"))
+          .toSql();
+      print(sql);
+      expect(true, isTrue);
+    });
   });
 }
