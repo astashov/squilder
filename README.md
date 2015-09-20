@@ -6,10 +6,39 @@ Feel free to add them and send pull requests! :)
 
 ## Usage
 
-You have to create a bunch of classes to get started. Hopefully I can fix it later with automatic code generation
-from a database schema, but for now you have to specify them manually. Like this:
+You have to generate the schema classes first, so squilder could statically type-check your queries.
+For that, you have to create a file (e.g. bin/schema_generator.dart) in your project, which will look something like this:
 
 ```dart
+import 'package:sqljocky/sqljocky.dart';
+import 'package:squilder/schema_generator.dart' as generator;
+
+void main() {
+  generator.generate(
+      dbType: "mysql",
+      host: "localhost",
+      user: "root",
+      password: "pass",
+      port: 3306,
+      database: "your_db",
+      output: "dbschema.dart",
+      library: "dbschema");
+}
+```
+
+The reason why I make you to create your generator file instead of just providing a `pub run` task is because `squilder` doesn't depend on any database pub package (or any package at all).
+So, it doesn't have any sqljocky, postgresql, etc dependencies in pubspec.yaml, therefore it cannot import these packages.
+
+When you create a generator script, you put the import of the database driver you use, and then generator can use it and load it via mirrors.
+
+After you created the script, run it with `dart bin/schema_generator.dart`, and it will create a file `dbschema.dart` with all the schema
+classes generated from your database.
+
+It will look something like this:
+
+```dart
+library dbschema;
+
 import 'package:squilder/squilder.dart';
 
 class OrderTable extends Table {
@@ -41,10 +70,13 @@ class OrderTableFields extends TableFields {
 final orders = new OrderTable();
 ```
 
-And then you could use them like this:
+And then you can import it and use it like this:
 
 
 ```dart
+import 'dbschema.dart';
+import 'package:squilder/squilder.dart';
+
 void main() {
   String selectString = select(orders.f.all)
       .from([orders])

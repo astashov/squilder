@@ -4,8 +4,6 @@ import 'package:squilder/src/table_fields.dart';
 import 'package:squilder/src/table.dart';
 import 'package:squilder/src/condition.dart';
 import 'package:squilder/src/update_interfaces.dart';
-import 'package:squilder/src/serializable.dart';
-import 'package:squilder/utils.dart';
 
 UpdateSetFirstStep update(Table table) {
   return new Update._(table: table);
@@ -13,7 +11,6 @@ UpdateSetFirstStep update(Table table) {
 
 class Update implements UpdateSetFirstStep, UpdateSetMoreStep {
   final Table table;
-  final Table fromTable;
   final Iterable<Condition> sets;
   final Condition whereCondition;
 

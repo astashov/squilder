@@ -1,11 +1,8 @@
 library squilder.delete;
 
-import 'package:squilder/src/table_fields.dart';
 import 'package:squilder/src/table.dart';
 import 'package:squilder/src/condition.dart';
 import 'package:squilder/src/delete_interfaces.dart';
-import 'package:squilder/src/serializable.dart';
-import 'package:squilder/utils.dart';
 
 DeleteWhereStep delete(Table table) {
   return new Delete._(table: table);

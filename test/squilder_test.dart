@@ -6,7 +6,6 @@ library squilder.test;
 import 'package:squilder/squilder.dart';
 import 'package:test/test.dart';
 
-
 class OrderTable extends Table {
   String get name => "orders";
 

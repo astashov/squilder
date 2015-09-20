@@ -34,6 +34,7 @@ void main() {
   final sql = select(orders.f.all).from([orders]).where(orders.f.id.eqToObj(5).and(orders.f.name.like("%blah%"))).toSql();
   var a = select(orders.f.all).where(orders.f.id.eqToObj(5));
   final sql2 = select(orders.f.all).where(orders.f.id.eqToObj(5).and(orders.f.name.like("%blah%"))).toSql();
+  print(a);
   print(sql);
   print(sql2);
 }
