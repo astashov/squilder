@@ -1,12 +1,14 @@
 library squilder.utils;
 
 String escape(String sql) {
-  return sql;
+  return sql.replaceAll("\\", "\\\\").replaceAll("'", "\\'");
 }
 
 String objectToSql(Object object) {
   if (object is num) {
     return escape(object.toString());
+  } else if (object == null) {
+    return "NULL";
   } else {
     return "'${escape(object.toString())}'";
   }
@@ -43,4 +45,3 @@ String capitalize(String string) {
     return string;
   }
 }
-

@@ -31,6 +31,7 @@ class OrderModifier implements Serializable {
 
 abstract class SelectStep extends FromStep {
   SelectStep select(Iterable<TableField> fields);
+  SelectStep distinct();
 }
 
 abstract class FromStep extends JoinStep {

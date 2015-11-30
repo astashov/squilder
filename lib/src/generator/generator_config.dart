@@ -1,41 +1,17 @@
 library squilder.generator.generator_config;
 
-enum DbType { mysql, postgresql }
+import 'package:dapter/dapter.dart';
 
 class GeneratorConfig {
-  final DbType dbType;
-  final String host;
-  final String user;
-  final String password;
-  final int port;
-  final String database;
+  final AdapterConfig adapterConfig;
   final String output;
   final String library;
 
-  GeneratorConfig(this.dbType, this.host, this.user, this.password, this.port, this.database, this.output, this.library);
+  GeneratorConfig(this.adapterConfig, this.output, this.library);
 
   factory GeneratorConfig.fromArgs(String dbType, String host, String user, String password, int port, String database, String output, String library) {
-    if (database == null) {
-      throw "You must specify the 'database' option with the database name\n";
-    }
+    var adapterConfig = new AdapterConfig(dbType: dbType, host: host, user: user, password: password, port: port, database: database);
 
-    DbType type;
-    if (dbType == "mysql") {
-      type = DbType.mysql;
-    } else if (dbType == "postgresql") {
-      type = DbType.postgresql;
-    } else {
-      throw "Unknown database type $dbType";
-    }
-
-    return new GeneratorConfig(
-        type,
-        host,
-        user,
-        password,
-        port,
-        database,
-        output,
-        library);
+    return new GeneratorConfig(adapterConfig, output, library);
   }
 }

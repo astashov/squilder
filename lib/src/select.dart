@@ -14,7 +14,8 @@ class Select implements SelectStep, OffsetStep, JoinStep, OnStep {
   final Iterable<TableField> selectFields;
   final Iterable<Table> fromTables;
   final List<_JoinPair> joinPairs;
-  final List<_OrderPair> orderPairs;
+  final bool distinctValue;
+  final List<OrderPair> orderPairs;
   final Iterable<TableField> groupFields;
   final Iterable<SelectStep> unionSelects;
   final Condition whereCondition;
@@ -25,14 +26,16 @@ class Select implements SelectStep, OffsetStep, JoinStep, OnStep {
   Select._({
       Iterable<TableField> selectFields,
       Iterable<Table> fromTables,
+      bool distinctValue,
       List<_JoinPair> joinPairs,
-      List<_OrderPair> orderPairs,
+      List<OrderPair> orderPairs,
       Iterable<TableField> groupFields,
       Iterable<SelectStep> unionSelects,
       this.whereCondition,
       this.havingCondition,
       this.limitValue,
       this.offsetValue}) :
+      this.distinctValue = distinctValue != null ? distinctValue : false,
       this.joinPairs = joinPairs != null ? joinPairs : [],
       this.orderPairs = orderPairs != null ? orderPairs : [],
       this.selectFields = selectFields != null ? selectFields : [],
@@ -44,7 +47,8 @@ class Select implements SelectStep, OffsetStep, JoinStep, OnStep {
       Iterable<TableField> selectFields,
       Iterable<Table> fromTables,
       List<_JoinPair> joinPairs,
-      List<_OrderPair> orderPairs,
+      bool distinctValue,
+      List<OrderPair> orderPairs,
       Iterable<TableField> groupFields,
       Iterable<SelectStep> unionSelects,
       Condition whereCondition,
@@ -54,6 +58,7 @@ class Select implements SelectStep, OffsetStep, JoinStep, OnStep {
     return new Select._(
         selectFields: selectFields != null ? selectFields : this.selectFields,
         fromTables: fromTables != null ? fromTables : this.fromTables,
+        distinctValue: distinctValue != null ? distinctValue : this.distinctValue,
         whereCondition: whereCondition != null ? whereCondition : this.whereCondition,
         joinPairs: joinPairs != null ? joinPairs : this.joinPairs,
         orderPairs: orderPairs != null ? orderPairs : this.orderPairs,
@@ -62,6 +67,10 @@ class Select implements SelectStep, OffsetStep, JoinStep, OnStep {
         havingCondition: havingCondition != null ? havingCondition : this.havingCondition,
         limitValue: limitValue != null ? limitValue : this.limitValue,
         offsetValue: offsetValue != null ? offsetValue : this.offsetValue);
+  }
+
+  SelectStep distinct() {
+    return _update(distinctValue: true);
   }
 
   FromStep from(Iterable<Table> tables) {
@@ -75,16 +84,18 @@ class Select implements SelectStep, OffsetStep, JoinStep, OnStep {
   String toSql() {
     final selectFieldsString = selectFields.map((f) => f.toSql()).join(", ");
     final tablesString = fromTables.map((t) => t.toSql()).join(", ");
-    var thisSql = "(SELECT ${selectFieldsString} FROM ${tablesString}" +
-      (joinPairs.isNotEmpty ? " ${joinPairs.map((t) => t.toSql()).join(", ")}" : "") +
+    final distinctString = distinctValue ? " DISTINCT" : "";
+    var thisSql = "(SELECT${distinctString} ${selectFieldsString} FROM ${tablesString}" +
+      (joinPairs.isNotEmpty ? " ${joinPairs.map((t) => t.toSql()).join(" ")}" : "") +
       (whereCondition != null ? " WHERE ${whereCondition.toSql()}" : "") +
       (groupFields.isNotEmpty ? " GROUP BY ${groupFields.map((f) => f.toSql()).join(', ')}" : "") +
       (havingCondition != null ? " HAVING ${havingCondition.toSql()}" : "") +
       (orderPairs.isNotEmpty ? " ORDER BY ${orderPairs.map((op) => op.toSql()).join(', ')}" : "") +
-      (limitValue != null ? " LIMIT $limitValue}" : "") +
-      (offsetValue != null ? " OFFSET $offsetValue}" : "") + ")";
+      (limitValue != null ? " LIMIT $limitValue" : "") +
+      (offsetValue != null ? " OFFSET $offsetValue" : "") + ")";
     var sqls = [thisSql]..addAll(unionSelects.map((us) => us.toSql()));
-    return sqls.join(" UNION ");
+    var result = sqls.join(" UNION ");
+    return result;
   }
 
   SelectStep select(Iterable<TableField> fields) {
@@ -125,7 +136,7 @@ class Select implements SelectStep, OffsetStep, JoinStep, OnStep {
   }
 
   OrderByStep orderBy(TableField field, OrderModifier modifier) {
-    return _update(orderPairs: []..addAll(orderPairs)..add(new _OrderPair(field, modifier)));
+    return _update(orderPairs: []..addAll(orderPairs)..add(new OrderPair(field, modifier)));
   }
 
   HavingStep having(Condition condition){
@@ -160,11 +171,11 @@ class _JoinPair {
   }
 }
 
-class _OrderPair implements Serializable {
+class OrderPair implements Serializable {
   final TableField field;
   final OrderModifier modifier;
 
-  _OrderPair(this.field, this.modifier);
+  OrderPair(this.field, this.modifier);
 
   String toSql() {
     return "${field.toSql()} ${modifier.toSql()}";

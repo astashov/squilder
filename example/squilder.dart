@@ -8,6 +8,8 @@ class OrderTable extends Table {
   OrderTableFields _f;
   OrderTableFields get f => _f;
 
+  TableField<int> get primaryKey => f.id;
+
   OrderTable() {
     _f = new OrderTableFields(this);
   }

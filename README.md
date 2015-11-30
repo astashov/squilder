@@ -1,6 +1,6 @@
 # Squilder
 
-A type-safe builder of SQL strings in Dart, heavingly inspired by [JOOQ](http://www.jooq.org/).
+A type-safe builder of SQL strings in Dart, heavily inspired by [JOOQ](http://www.jooq.org/).
 It's currently super pre-alpha (i.e. I just started), so a lot of things could be missed.
 Feel free to add them and send pull requests! :)
 
@@ -46,6 +46,8 @@ class OrderTable extends Table {
 
   OrderTableFields _f;
   OrderTableFields get f => _f;
+  
+  TableField<int> get primaryKey => f.id;
 
   OrderTable() {
     _f = new OrderTableFields(this);
