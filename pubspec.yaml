@@ -2,6 +2,7 @@ name: squilder
 description: Type-safe builder of SQL strings
 version: 0.0.1
 author: Anton Astashov <anton.astashov@gmail.com>
+homepage: https://github.com/astashov/squilder
 
 environment:
   sdk: '>=1.12.0 <2.0.0'
